@@ -1,164 +1,67 @@
-# 🌬️ Dynamics of Static Stall
-### Numerical Study of Flow Transition over a 2D Flat Plate at Low Reynolds Numbers
+# Dynamics of static stall – flow over a 2D flat plate at low Reynolds number
 
-![Mechanical Engineering](https://img.shields.io/badge/Domain-Mechanical%20Engineering-blue)
-![CFD](https://img.shields.io/badge/Tool-ANSYS%20Fluent-orange)
-![MATLAB](https://img.shields.io/badge/Analysis-MATLAB-red)
-![Institution](https://img.shields.io/badge/Institution-NIE%20Mysuru-green)
+Bachelor thesis, B.E. Mechanical Engineering, The National Institute of Engineering (NIE), Mysuru, 2020–21. Team of 4: D Ashrith, Shashank S S, Sumanth C T, Venkatesha T E. Guide: Mr. P Srinag, Assistant Professor.
 
----
+Full report: `Dynamic of Static Stall - Final Report.pdf`
 
-## 📌 About the Project
+## Question
 
-This project investigates the transition of flow from **laminar (static) to chaotic** behaviour over a two-dimensional flat plate operating at a **low Reynolds number regime**. The study was conducted numerically using ANSYS Fluent with varying **angles of attack (AOA)** ranging from **0° to 32.5°** at an air velocity of **0.148 m/s**.
+How does the flow over a thin flat plate change from steady to chaotic as the angle of attack increases, and where does stall set in? We simulated the plate in ANSYS Fluent at angles of attack from 0° to 32.5° and analysed the lift signals with time-series and dynamical-systems methods.
 
-The results help understand the **stalling phenomenon** — how it occurs, when it begins, and the changes in flow behaviour associated with it, from coherent vortex structures to fully turbulent chaotic states.
-
----
-
-## 👨‍🎓 Project Team
-
-| Name | USN |
-|------|-----|
-| D Ashrith | 4NI18ME404 |
-| Shashank S S | 4NI18ME424 |
-| Sumanth C T | 4NI18ME428 |
-| Venkatesha T E | 4NI18ME431 |
-
-**Guide:** Mr. P Srinag, Assistant Professor
-**Institution:** Department of Mechanical Engineering, The National Institute of Engineering, Mysuru – 570008
-**Academic Year:** 2020–21
-
----
-
-## 🎯 Objectives
-
-- Simulate 2D flow over a flat plate at low Reynolds number using Direct Numerical Simulation (DNS)
-- Study the **stall phenomenon** and identify the critical angle of attack
-- Identify flow transition from **periodic → quasi-periodic → chaotic** regimes
-- Quantify **vortex energy** at leading edge (LEV) and trailing edge (TEV)
-- Apply **dynamical systems theory** to characterise aerodynamic flow behaviour
-
----
-
-## ⚙️ Simulation Setup
+## Setup
 
 | Parameter | Value |
-|-----------|-------|
-| Flow Type | 2D Incompressible Viscous |
-| Solver | ANSYS Fluent (DNS) |
-| Air Velocity (V∞) | 0.148 m/s |
-| Flat Plate Dimensions | 10 × 0.2 cm |
-| Domain Size | 12C × 8C |
-| Angles of Attack | 0° to 32.5° |
-| Time Step (Δt) | 0.003 s |
-| Total Time Steps | 100,000 |
-| Mesh Nodes | ~2.02 Lakhs |
-| Min. Kolmogorov Length Scale | 0.56 mm |
+|---|---|
+| Flow | 2D, incompressible, unsteady, laminar (no turbulence model) |
+| Solver | ANSYS Fluent, double precision, 8 parallel processes |
+| Free-stream velocity | 0.148 m/s (air), Re ≈ 1000 based on chord |
+| Plate | 10 cm chord × 0.2 cm thickness |
+| Mesh | Overset plate mesh in a circular background mesh (radius 12 chords), about 202,000 nodes |
+| Angles of attack | 0° to 32.5° |
+| Time step | 0.003 s, 100,000 steps, 20 iterations per step |
 
----
+The report calls this setup DNS: at Re ≈ 1000 the flow is laminar, so the unsteady Navier–Stokes equations are solved directly without a turbulence model.
 
-## 📊 Key Results
+## Results
 
-### Flow Regimes Identified
+| Angle of attack | Flow behaviour |
+|---|---|
+| 0°–9° | Steady, two stable shear layers, no shedding |
+| 10°–20.5° | Periodic vortex shedding |
+| 20.5°–22° | Quasi-periodic, transition begins |
+| 23°–25° | Chaotic; lift jumps from 22° to 23° and drops sharply from 24° to 25° |
 
-| Angle of Attack | Flow Behaviour |
-|-----------------|----------------|
-| 0° – 9° | Steady laminar — attached flow, no shedding |
-| 10° – 20.5° | Periodic Kármán vortex shedding |
-| 20.5° – 22° | Quasi-periodic — transition begins |
-| 23° – 25° | Chaotic — stall condition reached |
-| 26° – 32.5° | Post-stall re-stabilisation |
+- Stall occurs between 24° and 25°.
+- At 26°–27° the flow is still unsteady.
+- The lift-coefficient trend was compared with published data for a 5 %-thick flat plate and for NACA 0012 at similar Reynolds numbers (Mittal; Durante et al.). The airfoil data are a different shape, so this checks the trend, not the values.
 
-- **Stall angle** observed between **24° and 25°**
-- Sudden jump in CL from AoA 22° → 23°, followed by a sharp drop at 24° → 25°
+## Analysis methods
 
----
+Applied to the lift-coefficient time series in MATLAB:
 
-## 🔬 Analysis Techniques
+- **Recurrence quantification analysis (RQA):** determinism falls from 99.4 % at 15° to 97.9 % at 22° and 93.6 % at 25°, confirming the move toward chaos.
 
-### 1. Recurrence Quantification Analysis (RQA)
-Used to identify periodic, quasi-periodic, and chaotic regimes from lift coefficient time series data.
+  | AoA | Embedding dim. | Delay | Recurrence rate | Determinism |
+  |---|---|---|---|---|
+  | 15° | 3 | 86 | 10.22 % | 99.40 % |
+  | 22° | 3 | 90 | 6.62 % | 97.86 % |
+  | 25° | 3 | 210 | 5.40 % | 93.58 % |
 
-| AoA | Embedding Dim | Delay | Recurrence Rate (%) | Determinism (%) |
-|-----|--------------|-------|----------------------|-----------------|
-| 15° | 3 | 86 | 10.22 | 99.40 |
-| 22° | 3 | 90 | 6.62 | 97.86 |
-| 25° | 3 | 210 | 5.40 | 93.58 |
+- **Fast Fourier transform (FFT):** dominant shedding frequencies
+- **Continuous wavelet transform:** how frequency content changes over time
+- **Empirical mode decomposition and Hilbert-Huang transform:** instantaneous frequency and energy of the non-stationary signals
+- **Q-criterion:** vortex identification at the leading and trailing edges
 
-> Decreasing determinism confirms transition to chaos as AoA increases.
+## Files
 
-### 2. Fast Fourier Transform (FFT)
-Converts time-series lift signal into frequency and energy domain to identify dominant shedding frequencies.
+- `Dynamic of Static Stall - Final Report.pdf` – full thesis with setup, validation, vortex plots and time-series analysis
 
-### 3. Continuous Wavelet Transform (CWT)
-Provides time-frequency localisation with energy density — addresses the temporal limitation of FFT.
+## Key references
 
-### 4. Empirical Mode Decomposition (EMD) + Hilbert-Huang Transform (HHT)
-Decomposes non-linear, non-stationary signals into Intrinsic Mode Functions (IMFs) for instantaneous frequency and energy analysis.
+- Anderson, J. D. (2003). *Fundamentals of Aerodynamics.*
+- Liu, Y. et al. (2012). Numerical bifurcation analysis of static stall of airfoil.
+- Durante, D. et al. (2020). Bifurcations and chaos transition in the flow over an airfoil at low Reynolds number.
+- Huang, N. E. et al. (1998). The empirical mode decomposition and the Hilbert spectrum for nonlinear and non-stationary time series analysis.
+- Eckmann, J. P. et al. (1987). Recurrence plots of dynamical systems.
 
----
-
-## 🗂️ Repository Structure
-
-```
-Dynamics-of-Static-Stall/
-│
-├── README.md
-│
-├── Report/
-│   └── Final_Report.pdf
-│
-├── Simulation/
-│   ├── Geometry/          # ANSYS Workbench geometry files
-│   ├── Mesh/              # Overset and background mesh files
-│   └── Fluent_Setup/      # Boundary conditions and solver settings
-│
-├── MATLAB/
-│   ├── RQA.m              # Recurrence Quantification Analysis
-│   ├── FFT_Analysis.m     # Fast Fourier Transform
-│   ├── CWT_Analysis.m     # Continuous Wavelet Transform
-│   └── EMD_HHT.m         # Empirical Mode Decomposition & HHT
-│
-├── Results/
-│   ├── Vortex_Patterns/   # Q-criterion vortex visualisations
-│   ├── CL_CD_Plots/       # Lift and drag time histories
-│   ├── RQA_Plots/         # Recurrence and attractor diagrams
-│   └── Time_Series/       # FFT, CWT, EMD, HHT plots
-│
-└── References/
-    └── reference_list.md
-```
-
----
-
-## 🛠️ Tools & Software
-
-- **ANSYS Workbench** — Geometry and mesh generation
-- **ANSYS Fluent** — CFD simulation (DNS model)
-- **MATLAB** — RQA, FFT, CWT, EMD, and HHT analysis
-- **Q-criterion** — Vortex identification and animation
-
----
-
-## 📚 References
-
-Key references used in this study:
-
-- J D Anderson (2003) — *Fundamentals of Aerodynamics*
-- Yan Liu et al. (2012) — *Numerical bifurcation analysis of static stall*
-- D Durante et al. (2020) — *Bifurcations and chaos transition at low Reynolds number*
-- Norden E. Huang et al. (1998) — *EMD and Hilbert spectrum for nonlinear time series*
-- J. P. Eckmann et al. (1987) — *Recurrence Plots of Dynamical Systems*
-
----
-
-## 🏷️ Topics
-
-`cfd` `aerodynamics` `flat-plate` `ansys-fluent` `matlab` `low-reynolds-number` `static-stall` `vortex-dynamics` `recurrence-quantification-analysis` `empirical-mode-decomposition` `wavelet-transform` `dns` `mechanical-engineering`
-
----
-
-## 📄 License
-
-This project was submitted in partial fulfillment of the **Bachelor of Engineering in Mechanical Engineering** at The National Institute of Engineering, Mysuru (2020–21). All rights reserved by the authors.
+Submitted in partial fulfilment of the B.E. in Mechanical Engineering, NIE Mysuru (2020–21).
