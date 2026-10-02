@@ -2,6 +2,8 @@
 
 Bachelor thesis, B.E. Mechanical Engineering, The National Institute of Engineering (NIE), Mysuru, 2020–21. Team of 4: D Ashrith, Shashank S S, Sumanth C T, Venkatesha T E. Guide: Mr. P Srinag, Assistant Professor.
 
+**My role:** team lead. I generated the mesh, did the MATLAB analysis of the lift signals (FFT, wavelet, recurrence) and interpreted the results, and wrote the report.
+
 Full report: `Dynamic of Static Stall - Final Report.pdf`
 
 ## Question
